@@ -213,10 +213,10 @@ class _GobanPainter extends CustomPainter {
     double py = (ban_locate_y + (p.y - 1) * isi_size).toDouble();
     if (su < 10) {
       px += isi_quarter + isi_8;
-      py += isi_8;
+      py += isi_8 + 2;
     } else {
       px += isi_quarter;
-      py += isi_8;
+      py += isi_8 + 2;
     }
 
     var offset = Offset(px, py);
@@ -233,8 +233,9 @@ class _GobanPainter extends CustomPainter {
       return;
     }
     Point bp = gbn.getNowLocate();
-    int bx = bp.x.toInt();
-    int by = bp.y.toInt();
+    Point p = gbn.locateConv(bp);
+    int bx = p.x.toInt();
+    int by = p.y.toInt();
     if (bx == 0) return;
     //int isi = gbn.getNowIsiIro();
     int x1 = ban_locate_x + (bx - 1) * isi_size + isi_half;
@@ -269,6 +270,8 @@ class _GobanPainter extends CustomPainter {
       ban_locate_x = ban_locate_x_default + screen_width - ban_width;
       ban_locate_y = ban_locate_y_default + screen_height - ban_width;
     }
+    gbn.ban_locate_x = ban_locate_x;
+    gbn.ban_locate_y = ban_locate_y;
   }
 
   void setZoomMode() {

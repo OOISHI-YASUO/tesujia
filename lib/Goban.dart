@@ -428,6 +428,33 @@ class Goban {
     tjn.delFrom(tesu);
   }
 
+  // ＸＹ反転
+  void changeXY() {
+    if (xy == 0) {
+      xy = 1;
+    } else {
+      xy = 0;
+    }
+  }
+
+  // 上下反転
+  void changeYJ() {
+    if (yj == 0) {
+      yj = 1;
+    } else {
+      yj = 0;
+    }
+  }
+
+  // 左右反転
+  void changeXJ() {
+    if (xj == 0) {
+      xj = 1;
+    } else {
+      xj = 0;
+    }
+  }
+
   void printStatus() {
     print("");
     print("Status ${_name}");

@@ -60,7 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (grade == null) {
       grade = 1;
     }
-    print("makeQuestion grade=${grade}");
     if (grade == 1) {
       Data.makeQuestionPrimer();
       Data.setGradeName("primer");
@@ -85,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Wrap(direction: Axis.horizontal, children: <Widget>[
           GestureDetector(
               onTapDown: (details) => onTouchEvent(details),
+              onVerticalDragEnd: (details) => onSwaipUpDownEvent(details),
               child: GobanBody(gbn)),
           GestureDetector(
             onTapDown: (details) => onTouchEvent2(details),
@@ -187,6 +187,15 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  //スワイプ
+  void onSwaipUpDownEvent(details) {
+    setState(() {
+      gbn.changeYJ();
+    });
+    if (details.primaryVelocity! < 0) {
+    } else if (details.primaryVelocity! > 0) {}
+  }
+
   void onTouchEvent(details) {
     if (show_answer == true && answer_check == false) {
       return;
@@ -215,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //ここに決める
   void deside(Point cp) {
-    Point bp = gbn.locateConv2(cp);
+    Point bp = gbn.locateConv(cp);
     //打つ
     int ret = gbn.isiUtu(bp);
     if (ret == 0) return;
