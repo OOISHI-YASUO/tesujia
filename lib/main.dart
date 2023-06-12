@@ -7,6 +7,7 @@ import 'GobanBody.dart';
 import 'Goban.dart';
 import 'IgoSgf.dart';
 import 'Data.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() {
   runApp(const MainApp());
@@ -34,6 +35,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final BannerAd myBanner = BannerAd(
+    adUnitId: AD_UNIT_ID,
+    size: AdSize.banner,
+    request: AdRequest(),
+    listener: BannerAdListener(),
+  );
+
+  final BannerAdListener listener = BannerAdListener(
+    // Called when an ad is successfully received.
+    onAdLoaded: (Ad ad) => debugPrint('Ad loaded.'),
+    // Called when an ad request failed.
+    onAdFailedToLoad: (Ad ad, LoadAdError error) {
+      // Dispose the ad here to free resources.
+      ad.dispose();
+      debugPrint('Ad failed to load: $error');
+    },
+    // Called when an ad opens an overlay that covers the screen.
+    onAdOpened: (Ad ad) => debugPrint('Ad opened.'),
+    // Called when an ad removes an overlay that covers the screen.
+    onAdClosed: (Ad ad) => debugPrint('Ad closed.'),
+    // Called when an impression occurs on the ad.
+    onAdImpression: (Ad ad) => debugPrint('Ad impression.'),
+  );
+
   final Goban gbn = Goban("main");
   int seikai_tesu = 0;
   int kifuInx = 1;
@@ -76,8 +101,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (ADMOB_MODE != 0) {
+      try {
+        myBanner.load();
+      } catch (e, s) {
+        String str = "load ${e} ${s}";
+        print(str);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
+
     Size size = MediaQuery.of(context).size;
+    //print(size);
     double button_size = size.width / 8;
     return Scaffold(
       body: Center(
@@ -182,6 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ]),
           ),
+          adContainer,
         ]),
       ),
     );
@@ -408,8 +456,10 @@ class _MyHomePageState extends State<MyHomePage> {
     gbn.setInputMode(true);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int? grade = prefs.getInt("grade");
+    print("prefs.getInt('grade') =${grade}");
     if (grade == null) {
       grade = 1;
+      prefs.setInt('grade', grade);
     }
     if (grade == 1) {
       grade_name = "primer";
@@ -421,6 +471,7 @@ class _MyHomePageState extends State<MyHomePage> {
       grade_name = "endgame";
     }
     int? qno = prefs.getInt(grade_name);
+    print("grade_name=${grade_name} qno=${qno}");
     if (qno == null) {
       qno = 1;
     } else {
@@ -431,8 +482,9 @@ class _MyHomePageState extends State<MyHomePage> {
       grade++;
       if (grade > 4) grade = 1;
       prefs.setInt("grade", grade);
+      makeQuestion();
     }
-    //print("qno=${qno}");
+    print("Data.grade_name=${Data.grade_name} qno=${qno}");
     prefs.setInt(Data.grade_name, qno);
     //一度も出題していない問題
     String data = Data.getQuestion(qno);
