@@ -14,7 +14,7 @@ final int ZOOM_LEFT_DOWN = 2;
 final int ZOOM_RIGHT_UP = 3;
 final int ZOOM_RIGHT_DOWN = 4;
 
-final int ADMOB_MODE = 0;
+final int ADMOB_MODE = 1;
 final int ADMOB_IOS = 1;
 final int ADMOB_ANDROID = 2;
 
