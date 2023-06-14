@@ -10,6 +10,16 @@ import 'Data.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() {
+  //AdMobの初期化処理
+  if (ADMOB_MODE != 0) {
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      MobileAds.instance.initialize();
+    } catch (e, s) {
+      String str = "main ${e} ${s}";
+      print(str);
+    }
+  }
   runApp(const MainApp());
 }
 
@@ -456,7 +466,6 @@ class _MyHomePageState extends State<MyHomePage> {
     gbn.setInputMode(true);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int? grade = prefs.getInt("grade");
-    print("prefs.getInt('grade') =${grade}");
     if (grade == null) {
       grade = 1;
       prefs.setInt('grade', grade);
@@ -471,20 +480,21 @@ class _MyHomePageState extends State<MyHomePage> {
       grade_name = "endgame";
     }
     int? qno = prefs.getInt(grade_name);
-    print("grade_name=${grade_name} qno=${qno}");
     if (qno == null) {
       qno = 1;
+      prefs.setInt(grade_name, qno);
     } else {
       qno++;
+      prefs.setInt(grade_name, qno);
     }
     if (qno > Data.getQuestionCount()) {
       qno = 1;
       grade++;
       if (grade > 4) grade = 1;
       prefs.setInt("grade", grade);
+      prefs.setInt(grade_name, qno);
       makeQuestion();
     }
-    print("Data.grade_name=${Data.grade_name} qno=${qno}");
     prefs.setInt(Data.grade_name, qno);
     //一度も出題していない問題
     String data = Data.getQuestion(qno);

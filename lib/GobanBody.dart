@@ -20,7 +20,7 @@ class GobanBody extends StatelessWidget {
         color: Color.fromRGBO(246, 168, 104, 1),
       ),
       width: size.width,
-      height: size.height - button_height - 60,
+      height: size.height - button_height - 50,
       child: CustomPaint(
         painter: _GobanPainter(gbn, size),
       ),
@@ -57,7 +57,7 @@ class _GobanPainter extends CustomPainter {
     gbn = goban;
     ban_size = gbn.ban_size;
     screen_width = size.width.toInt();
-    screen_height = size.height.toInt() - button_height - 60;
+    screen_height = size.height.toInt() - button_height - 50;
     isi_size = (screen_width / 12).toInt();
     gbn.isi_size = isi_size;
     isi_half = (isi_size / 2).floor();
@@ -72,7 +72,7 @@ class _GobanPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    screen_height = size.height.toInt() - button_height - 60;
+    screen_height = size.height.toInt() - button_height - 50;
     ban_size = gbn.ban_size;
     //int ban_length = isi_size * ban_size;
     final paint = Paint()..color = Colors.black;
